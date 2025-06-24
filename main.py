@@ -9,7 +9,7 @@ system_prompt = """You have access to thermoask_tool which adjusts your sampling
 
 1. Call thermoask_tool() for the first task
 2. Immediately generate content for that task
-3. Call thermoask_tool() for the next task  
+3. Call thermoask_tool() for the next task
 4. Immediately generate content for that task
 
 IMPORTANT: Always generate content immediately after each tool call, don't call multiple tools in a row.
