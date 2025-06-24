@@ -2,25 +2,36 @@ import ollama
 
 model = "qwen2.5:7b"
 
-prompt = """Solve the following math expression: "1 + 5 * 3 - 4 / 2".
+prompt = """Solve the following math expression (show your work): "1 + 5 * 3 - 4 / 2".
 Then, write a really abstract poem that contains the answer to this expression."""
 
-system_prompt = """You have access to thermoask_tool which adjusts your temperature for optimal performance. Call it before each distinct type of task within your response.
+system_prompt = """You have access to thermoask_tool which adjusts your sampling temperature for optimal performance. Call it before each distinct type of task within your response. Follow this pattern:
 
-Temperature guide with approximate ranges:
-- 0.0-0.3: Precise tasks like math, coding
-- 0.4-0.8: Balanced and factual tasks like explanations, summaries
-- 0.9-2.0: Creative and artistic tasks like storytelling, brainstorming
+1. Call thermoask_tool() for the first task
+2. Immediately generate content for that task
+3. Call thermoask_tool() for the next task  
+4. Immediately generate content for that task
+
+IMPORTANT: Always generate content immediately after each tool call, don't call multiple tools in a row.
+
+Temperature guide:
+- 0.0-0.3: Precise tasks like solving math problems, coding
+- 0.4-0.9: Balanced tasks like non-fiction summaries, essays
+- 1.0-2.0: Creative and artistic tasks like fictional storytelling, brainstorming
 - 2.0+: Truly random tasks like random number generation, unpredictable outputs
 
-Use thermoask_tool(task_description, reasoning_space, temperature) where you specify both what task you're dealing with and what temperature you want to switch to."""
+Use thermoask_tool(task_description, reasoning_space, temperature) where you specify:
+- task_description: what task you're currently dealing with
+- reasoning_space: which temperature category you think the task falls under, why, and what final temperature you are leaning towards (aim for at least 2 sentences of explanation)
+- temperature: the final temperature value you want to switch to"""
 
 print("generating with dynamic temperature adjustment...")
 
 
-def thermoask_tool(task_description: str, temperature: float) -> str:
-    print(f"[tool called: '{task_description}' -> temp {temperature}]")
-    return f"Temperature set to {temperature}"
+def thermoask_tool(task_description: str, reasoning_space: str, temperature: float) -> str:
+    print(
+        f"[tool called: '{task_description}' -> temp {temperature}; reasoning: '{reasoning_space}']")
+    return f"Temperature was successfully set to {temperature} for '{task_description}'"
 
 
 def run_conversation():
