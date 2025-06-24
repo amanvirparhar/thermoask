@@ -49,11 +49,10 @@ def run_conversation():
             for tool_call in response['message']['tool_calls']:
                 if tool_call['function']['name'] == 'thermoask_tool':
                     args = tool_call['function']['arguments']
-                    new_temp = args['temperature']
-                    current_temp = new_temp
+                    current_temp = args['temperature']
 
                     result = thermoask_tool(**args)
-                    print(f"\n[temperature adjusted to {new_temp}]\n")
+                    print(f"\n[temperature adjusted to {current_temp}]\n")
 
                     messages.append({
                         'role': 'tool',
