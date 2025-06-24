@@ -13,7 +13,7 @@ Temperature guide with approximate ranges:
 - 0.9-2.0: Creative and artistic tasks like storytelling, brainstorming
 - 2.0+: Truly random tasks like random number generation, unpredictable outputs
 
-Use thermoask_tool(task_description, reasoning_space, temperature) where you specify both what task you're deaing with and what temperature you want to switch to."""
+Use thermoask_tool(task_description, reasoning_space, temperature) where you specify both what task you're dealing with and what temperature you want to switch to."""
 
 print("generating with dynamic temperature adjustment...")
 
