@@ -1,16 +1,18 @@
 import ollama
 
 model = "qwen2.5:7b"
+default_temp = 0.6
 
 prompt = """Solve the following math expression (show your work): "1 + 5 * 3 - 4 / 2".
 Then, write a really abstract poem that contains the answer to this expression."""
 
 system_prompt = """You have access to thermoask_tool which adjusts your sampling temperature for optimal performance. Call it before each distinct type of task within your response. Follow this pattern:
 
-1. Call thermoask_tool() for the first task
-2. Immediately generate content for that task
-3. Call thermoask_tool() for the next task
-4. Immediately generate content for that task
+1. Call thermoask_tool() for the first task, specifying new temperature for the task
+2. Immediately generate content for the first task using the modified temperature
+3. Call thermoask_tool() for the next task, specifying new temperature for the task
+4. Immediately generate content for that task using the modified temperature
+5. Repeat, if necessary
 
 IMPORTANT: Always generate content immediately after each tool call, don't call multiple tools in a row.
 
@@ -40,7 +42,7 @@ def run_conversation():
         {'role': 'user', 'content': prompt}
     ]
 
-    current_temp = 1.0
+    current_temp = default_temp
 
     while True:
         response = ollama.chat(model,
@@ -70,6 +72,21 @@ def run_conversation():
                         'content': result,
                         'tool_call_id': tool_call.get('id', 'temp_adjust')
                     })
+
+                    response = ollama.chat(model,
+                                           messages=messages,
+                                           tools=[thermoask_tool],
+                                           options={'temperature': current_temp})
+
+                    print(response['message']['content'])
+
+                    messages.append({
+                        'role': 'assistant',
+                        'content': response['message']['content']
+                    })
+
+                    current_temp = default_temp
+                    print(f"\n[temperature reset to default {default_temp}]\n")
         else:
             break
 
